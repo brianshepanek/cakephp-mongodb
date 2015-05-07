@@ -1024,6 +1024,16 @@ class MongodbSource extends DboSource {
 		return $return;
 	}
 
+	public function aggregate(Model $Model, $aggregate = array()){
+		$table = $this->fullTableName($Model);
+
+		$return = $this->_db
+            ->selectCollection($Model->table)
+            ->aggregate($aggregate);
+		
+		return $return['result'];
+	}
+
 /**
  * Read Data
  *
@@ -1245,7 +1255,10 @@ class MongodbSource extends DboSource {
 		if($query === 'getMongoDb') {
 			return $this->getMongoDb();
 		}
-
+		if($query == 'aggregate'){
+			return $this->aggregate($args[2], $params[0]);
+		}
+		
 		if (count($args) > 1 && (strpos($args[0], 'findBy') === 0 || strpos($args[0], 'findAllBy') === 0)) {
 			$params = $args[1];
 
